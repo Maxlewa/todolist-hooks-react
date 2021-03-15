@@ -1,15 +1,48 @@
 import React from 'react'
+import {useState} from 'react'
 import './css/app.css'
+import List from './List';
 
 export default function App() {
+
+  const [currentItem, setCurrentItem] = useState("");
+  const [itemList, updateItemList] = useState([]);
+
+  const onChangeHandler = (e) => {
+    console.log("current value", e.target.value);
+    setCurrentItem(e.target.value);
+  }
+
+  const addItemToList = () => {
+    updateItemList([...itemList, {item: currentItem, key: Date.now()}])
+    setCurrentItem("")
+    console.log("list items", itemList);
+  }
+
+  const addItemToListEnter = (e) => {
+    if (e.key === 'Enter') {
+      updateItemList([...itemList, {item: currentItem, key: Date.now()}])
+      setCurrentItem("")
+      console.log("list items", itemList);
+    }
+  }
+
+  const clearAll = () => {
+    updateItemList([])
+  }
+
+  const darkMode = () => {
+    document.body.style.filter = "invert(100%)"
+  }
+
   return (
     <div>
       {/* TO DO LIST AREA */}
       <div id="bigdiv" className="py-5">
         {/* INPUT + BUTTON */}
         <div id="inputetbtn">
-          <input type="text" placeholder="Votre tâche ?" id="inputbox" />
-          <button id="btnadd"><span>+</span> Add</button>
+          <input type="text" placeholder="Votre tâche ?" id="inputbox" value={currentItem} onChange={onChangeHandler} onKeyDown={addItemToListEnter} />
+          <button id="btnadd" onClick={addItemToList}><span>+</span> Add</button>
         </div>
         {/* TITRE */}
         <div id="divtitre">
@@ -25,24 +58,14 @@ export default function App() {
           </div>
           {/* TACHES LISTE */}
           <div id="divtachesliste">
-            {/* 1 TACHE */}
-            {/* <div class="divtache">
-                    <div id="tachename">
-                        <p class="tacheMot"></p>
-                    </div>
-                    <div id="threebuttons">
-                        <button id="btncheck"><i class="fas fa-check-circle"></i></button>
-                        <button id="btnedit"><i class="fas fa-save"></i></button>
-                        <button id="btntrash"><i class="fas fa-trash-alt"></i></button>
-                    </div>
-                </div> */}
+            <List itemList={itemList} updateItemList={updateItemList}/>
           </div>
           {/* CLEAR BTN */}
           <div id="divclear">
-            <button id="btnclear">Clear list</button>
+            <button id="btnclear" onClick={clearAll}>Clear list</button>
           </div>
           <div>
-            <button id="btn-darkmode">Dark Mode</button>
+            <button id="btn-darkmode" onClick={darkMode}>Dark Mode</button>
           </div>
         </div>
       </div>
